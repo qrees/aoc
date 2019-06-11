@@ -75,33 +75,33 @@ func genPossiblePerms(clue int, predefined []int, curStep int, leftOvers []bool,
 	}
 }
 
-func verify(puzzle [][]int) bool {
-	for i := 0; i < max; i++ {
-		var bitmask int
-		for j := 0; j < max; j++ {
-			if puzzle[i][j] > 0 {
-				if bitmask&(bitMasks[puzzle[i][j]]) == 0 {
-					bitmask = bitmask | bitMasks[puzzle[i][j]]
-				} else {
-					return false
-				}
-			}
-		}
-	}
-	for i := 0; i < max; i++ {
-		var bitmask int
-		for j := 0; j < max; j++ {
-			if puzzle[j][i] > 0 {
-				if bitmask&(bitMasks[puzzle[j][i]]) == 0 {
-					bitmask = bitmask | bitMasks[puzzle[j][i]]
-				} else {
-					return false
-				}
-			}
-		}
-	}
-	return true
-}
+// func verify(puzzle [][]int) bool {
+// 	for i := 0; i < max; i++ {
+// 		var bitmask int
+// 		for j := 0; j < max; j++ {
+// 			if puzzle[i][j] > 0 {
+// 				if bitmask&(bitMasks[puzzle[i][j]]) == 0 {
+// 					bitmask = bitmask | bitMasks[puzzle[i][j]]
+// 				} else {
+// 					return false
+// 				}
+// 			}
+// 		}
+// 	}
+// 	for i := 0; i < max; i++ {
+// 		var bitmask int
+// 		for j := 0; j < max; j++ {
+// 			if puzzle[j][i] > 0 {
+// 				if bitmask&(bitMasks[puzzle[j][i]]) == 0 {
+// 					bitmask = bitmask | bitMasks[puzzle[j][i]]
+// 				} else {
+// 					return false
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return true
+// }
 
 func printPuzzle(puzzle [][]int) {
 	fmt.Printf("    ")
@@ -116,7 +116,7 @@ func printPuzzle(puzzle [][]int) {
 			fmt.Printf("%2v  ", rows[i])
 		}
 		for j := 0; j < max; j++ {
-			fmt.Printf("%-2v ", puzzle[j][i])
+			fmt.Printf("%-2v ", puzzle[i][j])
 		}
 		if i == max-1 {
 			fmt.Printf("]")
@@ -158,6 +158,30 @@ func getXY(loc int, i int) (int, int) {
 	return x, y
 }
 
+// func checkBits(puzzle [][]int) {
+// 	var _cols = []int{0xF, 0xF, 0xF, 0xF}
+// 	var _rows = []int{0xF, 0xF, 0xF, 0xF}
+// 	for x := 0; x < max; x++ {
+// 		for y := 0; y < max; y++ {
+// 			value := puzzle[y][x]
+// 			if value != 0 {
+// 				_cols[x] = _cols[x] &^ bitMasks[value]
+// 				_rows[y] = _rows[y] &^ bitMasks[value]
+// 			}
+// 		}
+// 	}
+// 	for i := 0; i < max; i++ {
+// 		if _cols[i] != cols[i] {
+// 			printPuzzle(puzzle)
+// 			log.Fatal("error")
+// 		}
+// 		if _rows[i] != rows[i] {
+// 			printPuzzle(puzzle)
+// 			log.Fatal("error")
+// 		}
+// 	}
+// }
+
 func solvePartial(clues *[]int, loc int, puzzle [][]int) bool {
 	// if !verify(puzzle) {
 	// 	return false
@@ -176,7 +200,7 @@ func solvePartial(clues *[]int, loc int, puzzle [][]int) bool {
 	var y int
 	for i := 0; i < 4; i++ {
 		x, y = getXY(loc, i)
-		predefined[i] = puzzle[x][y]
+		predefined[i] = puzzle[y][x]
 	}
 	cur := []int{0, 0, 0, 0}
 	perms := make([][]int, 0)
@@ -203,20 +227,22 @@ func solvePartial(clues *[]int, loc int, puzzle [][]int) bool {
 			// printPuzzle(puzzle)
 			for i := 0; i < 4; i++ {
 				x, y = getXY(loc, i)
-				puzzle[x][y] = perm[i]
+				puzzle[y][x] = perm[i]
 			}
 			if solvePartial(clues, loc+1, puzzle) {
 				return true
 			}
 			for i := 0; i < max; i++ {
 				x, y = getXY(loc, i)
-				setBits(x, y, perm[i])
+				if predefined[i] == 0 {
+					setBits(x, y, perm[i])
+				}
 			}
 		}
 	}
 	for i := 0; i < max; i++ {
 		x, y = getXY(loc, i)
-		puzzle[x][y] = predefined[i]
+		puzzle[y][x] = predefined[i]
 	}
 
 	return false
@@ -227,21 +253,19 @@ func fillGaps(x int, y int, puzzle [][]int) bool {
 	if y == max {
 		return true
 	}
-	if puzzle[x][y] == 0 {
+	if puzzle[y][x] == 0 {
 		var possible = cols[x] & rows[y]
-		fmt.Printf("possible: %v %v %v\n", x, y, possible)
 		for i := 0; i < max; i++ {
 			value := i + 1
 			if possible&(1<<uint(i)) != 0 {
-				fmt.Printf("%v %v %v\n", x, y, value)
-				puzzle[x][y] = value
+				puzzle[y][x] = value
 				unsetBits(x, y, value)
 				res := fillGaps((x+1)%max, y+((x+1)/max), puzzle)
 				if res {
 					return true
 				} else {
 					setBits(x, y, value)
-					puzzle[x][y] = 0
+					puzzle[y][x] = 0
 				}
 			}
 		}
@@ -268,10 +292,16 @@ func main() {
 }
 
 var clues = []int{
-	0, 0, 1, 2,
-	0, 2, 0, 0,
-	0, 3, 0, 0,
-	0, 1, 0, 0}
+	2, 2, 1, 3,
+	2, 2, 3, 1,
+	1, 2, 2, 3,
+	3, 2, 1, 3}
+
+// var clues = []int{
+// 	0, 0, 1, 2,
+// 	0, 2, 0, 0,
+// 	0, 3, 0, 0,
+// 	0, 1, 0, 0}
 
 var outcome = [][]int{
 	{2, 1, 4, 3},
