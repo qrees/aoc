@@ -52,7 +52,7 @@ func main(){
     var input *os.File;
 
     input = os.Stdin;
-    var reader io.Reader = bufio.NewReader(input)
+    var reader io.Reader = bufio.NewReader(input);
     var decoder *json.Decoder = json.NewDecoder(reader);
     var v interface{};
     err := decoder.Decode(&v);
