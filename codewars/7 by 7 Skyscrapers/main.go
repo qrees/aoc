@@ -104,14 +104,6 @@ func getXY(loc int, i int) (int, int) {
 	return x, y
 }
 
-func makeRow(size int) []int {
-	var row []int
-	for i := 0; i < size; i++ {
-		row = append(row, 0)
-	}
-	return row
-}
-
 func solvePartial(clues []int, loc int, puzzle [][]int) bool {
 	if loc == max*4 {
 		return true
@@ -119,6 +111,8 @@ func solvePartial(clues []int, loc int, puzzle [][]int) bool {
 	if clues[loc] == 0 && loc < max*4 {
 		return solvePartial(clues, loc+1, puzzle)
 	}
+	fmt.Println(loc)
+	printPuzzle(puzzle)
 
 	var predefined = make([]int, max)
 	leftOvers := []bool{true, true, true, true, true, true, true}
@@ -170,7 +164,7 @@ func solvePartial(clues []int, loc int, puzzle [][]int) bool {
 		x, y = getXY(loc, i)
 		puzzle[y][x] = predefined[i]
 	}
-
+	fmt.Println("<-- back from", loc)
 	return false
 }
 
@@ -268,3 +262,13 @@ var _clues = []int{
 	0, 0, 3, 0, 0, 0, 0,
 	3, 0, 3, 0, 0, 5, 0,
 	0, 0, 0, 0, 5, 0, 4}
+
+var result = [][]int{
+	{1, 5, 6, 7, 4, 3, 2},
+	{2, 7, 4, 5, 3, 1, 6},
+	{3, 4, 5, 6, 7, 2, 1},
+	{4, 6, 3, 1, 2, 7, 5},
+	{5, 3, 1, 2, 6, 4, 7},
+	{6, 2, 7, 3, 1, 5, 4},
+	{7, 1, 2, 4, 5, 6, 3},
+}
