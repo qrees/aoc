@@ -1,0 +1,29 @@
+[package]
+name = "guessing_game"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.8.3"
+
+[[bin]]
+name = "types"
+path = "src/types.rs"
+
+[[bin]]
+name = "aoc_1"
+path = "src/aoc_1.rs"
+
+[[bin]]
+name = "aoc_5"
+path = "src/aoc_5.rs"
+
+[[bin]]
+name = "aoc_6"
+path = "src/aoc_6.rs"
+
+[[bin]]
+name = "aoc_7"
+path = "src/aoc_7.rs"
