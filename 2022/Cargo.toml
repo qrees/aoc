@@ -8,6 +8,17 @@ edition = "2021"
 [dependencies]
 rand = "0.8.3"
 
+[[bin]]
+name = "types"
+path = "src/types.rs"
+
+[[bin]]
+name = "aoc_1"
+path = "src/aoc_1.rs"
+
+[[bin]]
+name = "aoc2"
+path = "src/aoc2.rs"
 
 [[bin]]
 name = "aoc3"
@@ -16,3 +27,15 @@ path = "src/aoc3.rs"
 [[bin]]
 name = "aoc4"
 path = "src/aoc4.rs"
+
+[[bin]]
+name = "aoc_5"
+path = "src/aoc_5.rs"
+
+[[bin]]
+name = "aoc_6"
+path = "src/aoc_6.rs"
+
+[[bin]]
+name = "aoc_7"
+path = "src/aoc_7.rs"
