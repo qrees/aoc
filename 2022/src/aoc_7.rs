@@ -16,6 +16,23 @@ impl TreeNode {
     }
 }
 
+fn walk(root: Rc<RefCell<TreeNode>>, missing: u32) -> u32 {
+    let mut min_size = 70000000;
+
+    let root_size = root.borrow().files_size;
+    if root_size < min_size && root_size >= missing {
+        min_size = root_size;
+    }
+
+    for (name, subdir) in &root.borrow().directories {
+        let size = walk(subdir.clone(), missing);
+        if size < min_size && size >= missing {
+            min_size = size;
+        }
+    }
+    return min_size;
+}
+
 fn main() {
     let mut lines = io::stdin().lines();
 
@@ -94,4 +111,10 @@ fn main() {
     }
 
     dbg!(total);
+
+    let total_size = cur.borrow().files_size;
+    let unused = 70000000 - total_size;
+    let missing = 30000000 - unused;
+    let to_delete = walk(root, missing);
+    dbg!(to_delete);
 }
