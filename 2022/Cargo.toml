@@ -44,6 +44,9 @@ path = "src/aoc_7.rs"
 name = "aoc_8"
 path = "src/aoc_8.rs"
 
+[[bin]]
+name = "aoc_9"
+path = "src/aoc_9.rs"
 
 [[bin]]
 name = "test"

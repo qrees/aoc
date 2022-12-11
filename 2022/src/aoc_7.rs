@@ -3,6 +3,7 @@ use std::{io, collections::{HashMap}};
 use std::cell::RefCell;
 use std::rc::Rc;
 
+// See: https://applied-math-coding.medium.com/a-tree-structure-implemented-in-rust-8344783abd75
 #[derive(Debug)]
 struct TreeNode {
     pub directories: HashMap<String, Rc<RefCell<TreeNode>>>,
