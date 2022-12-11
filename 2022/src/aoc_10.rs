@@ -12,20 +12,44 @@ fn main() {
     for line in io::stdin().lines() {
         let input_line = line.unwrap();
         match input_line.as_str() {
-            "noop" => tick += 1,
+            "noop" => {
+                if (tick) >= (x - 1) && (tick) <= (x + 1) {
+                    print!("#");
+                } else {
+                    print!(" ");
+                }
+                tick = tick + 1;
+                if tick >= 40 {
+                    tick = 0;
+                    println!("");
+                }
+            }
             _ => {
                 (_, value) = input_line.split_once(" ").unwrap();
                 let value: i32 = value.parse().unwrap();
-                tick += 2;
+                if (tick) >= (x - 1) && (tick) <= (x + 1) {
+                    print!("#");
+                } else {
+                    print!(" ");
+                }
+                tick = tick + 1;
+                if tick >= 40 {
+                    tick = 0;
+                    println!("");
+                }
+                if (tick) >= (x - 1) && (tick) <= (x + 1) {
+                    print!("#");
+                } else {
+                    print!(" ");
+                }
+                tick = tick + 1;
+                if tick >= 40 {
+                    tick = 0;
+                    println!("");
+                }
                 x += value;
             }
         }
-        if tick >= step {
-            // dbg!(pre_x * step);
-            total += pre_x * step;
-            step += 40;
-        }
-        pre_x = x;
     }
     dbg!(total);
 }
