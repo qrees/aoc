@@ -52,33 +52,35 @@ fn scenic_score(matrix: &Vec<Vec<i32>>, loc_x: usize, loc_y: usize) -> usize {
 
     for x in (loc_x + 1)..size_x {
         let cur_h = matrix[x][loc_y];
+        edge_r = x;
         if cur_h >= start_h {
-            edge_r = x;
             break;
         }
     }
-    for x in 0..(loc_x - 1) {
+    for x in (0..(loc_x)).rev() {
         let cur_h = matrix[x][loc_y];
+        edge_l = x;
         if cur_h >= start_h {
-            edge_l = x;
             break;
         }
     }
     for y in (loc_y + 1)..size_y {
         let cur_h = matrix[loc_x][y];
+        edge_b = y;
         if cur_h >= start_h {
-            edge_b = y;
             break;
         }
     }
-    for y in 0..(loc_y - 1) {
+    for y in (0..(loc_y)).rev() {
         let cur_h = matrix[loc_x][y];
+        edge_t = y;
         if cur_h >= start_h {
-            edge_t = y;
             break;
         }
     }
-    let dist = (edge_r - loc_x) + (loc_x - edge_l) + (edge_b - loc_y) + (edge_t - loc_y);
+    // dbg!(loc_x, loc_y);
+    // dbg!(edge_r, edge_l, edge_b, edge_t);
+    let dist = (edge_r - loc_x) * (loc_x - edge_l) * (edge_b - loc_y) * (loc_y - edge_t);
     return dist;
 }
 
@@ -94,12 +96,14 @@ fn main() {
         visible.push(vis_line);
     }
 
-    let mut count = traverse(&matrix, &mut visible, 1, 0);
-    count += traverse(&matrix, &mut visible, 0, 1);
-    count += traverse(&matrix, &mut visible, -1, 0);
-    count += traverse(&matrix, &mut visible, 0, -1);
-
-    dbg!(count);
-    // dbg!(matrix);
-    // dbg!(visible);
+    let mut max_score = 0;
+    for x in 0..matrix.len() {
+        for y in 0..matrix[x].len() {
+            let score = scenic_score(&matrix, x, y);
+            if score > max_score {
+                max_score = score;
+            }
+        }
+    }
+    dbg!(max_score);
 }
