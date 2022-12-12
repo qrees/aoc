@@ -4,12 +4,13 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 struct Monkey {
-    pub items: VecDeque<u32>,
-    pub op: fn(old: u32) -> u32,
-    pub test: u32,
+    pub items: VecDeque<u64>,
+    pub op: fn(old: u64) -> u64,
+    pub test: u64,
     pub true_destination: usize,
     pub false_destination: usize,
 }
+
 
 fn main() {
     let mut monkeys: Vec<Rc<RefCell<Monkey>>> = vec![];
@@ -88,14 +89,17 @@ fn main() {
 
     let mut inspect_count: Vec<_> = [0; 8].to_vec();
     // let monkeys = Rc::new(RefCell::new(monkeys));
-    for _ in 0..20 {
+    let lcm = monkeys.iter().map(|m| m.borrow().test).fold(1, |a, v| {a * v});
+
+    for j in 0..10000 {
         for i in 0..monkeys.len() {
             let mut monkey = monkeys[i].clone();
             while monkey.borrow_mut().items.len() > 0 {
                 inspect_count[i] += 1;
                 let item = monkey.borrow_mut().items.pop_front().unwrap();
                 let new_level = (monkey.borrow().op)(item);
-                let divided = new_level / 3;
+                let new_level = new_level % lcm;
+                let divided = new_level;
                 if (divided % monkey.borrow_mut().test) == 0 {
                     monkeys[monkey.borrow_mut().true_destination].borrow_mut().items.push_back(divided);
                 } else {
@@ -108,6 +112,6 @@ fn main() {
     inspect_count.sort();
     inspect_count.reverse();
     // dbg!(inspect_count);
-    dbg!(inspect_count[0] * inspect_count[1]);
+    dbg!(inspect_count[0] as u64 * inspect_count[1] as u64);
     // dbg!()
 }
