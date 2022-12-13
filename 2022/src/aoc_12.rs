@@ -79,7 +79,7 @@ fn main() {
 
     dbg!(end_x, end_y);
     let mut pq = BinaryHeap::new();
-    let mut cur_x = ebd_x;
+    let mut cur_x = start_x;
     let mut cur_y = start_y;
     pq.push(State{cost: 0, position:(cur_x, cur_y)});
     dist[cur_y][cur_x] = 0;
