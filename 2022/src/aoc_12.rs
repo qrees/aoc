@@ -1,6 +1,7 @@
 use std::io;
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
+use std::process::exit;
 
 // struct Graph {
 //     map: Vec<Vec<u8>>,
@@ -79,14 +80,10 @@ fn main() {
 
     dbg!(end_x, end_y);
     let mut pq = BinaryHeap::new();
-    let mut cur_x = start_x;
-    let mut cur_y = start_y;
+    let mut cur_x = end_x;
+    let mut cur_y = end_y;
     pq.push(State{cost: 0, position:(cur_x, cur_y)});
     dist[cur_y][cur_x] = 0;
-
-    dbg!(map[23][161] as i32 - map[24][161] as i32);
-    dbg!(map[23][161] as char);
-    dbg!(map[23][161] as char);
 
     while ! pq.is_empty() {
         let state = pq.pop().unwrap();
@@ -97,9 +94,6 @@ fn main() {
         for (dx, dy) in [(1, 0), (0, 1), (-1, 0), (0, -1)] {
             let new_x: i32 = state.position.0 as i32 + dx;
             let new_y: i32 = state.position.1 as i32 + dy;
-            if (new_x == end_x as i32) && (new_y == end_y as i32) {
-                dbg!((new_x, new_y, cur_dist));
-            }
             if new_x < 0 { continue; };
             if new_x >= map[0].len() as i32 { continue; };
             if new_y < 0 { continue; };
@@ -107,14 +101,17 @@ fn main() {
             let new_x = new_x as usize;
             let new_y = new_y as usize;
 
-            // dbg!((map[cur_y][cur_x] as i32 - map[new_y][new_x] as i32));
-            if (map[cur_y][cur_x] as i32 - map[new_y][new_x] as i32) > -2 {
+            if (map[cur_y][cur_x] as i32 - map[new_y][new_x] as i32) < 2 {
 
             }else {
                 continue;
             }
 
             let alt = cur_dist + 1;
+            if map[new_y][new_x] == 'a' as u8 {
+                dbg!(alt);  // part 2 result
+                exit(0);
+            }
             if alt < dist[new_y][new_x] {
                 dist[new_y][new_x] = alt;
                 pq.push(State{cost: alt, position:(new_x, new_y)});
@@ -122,18 +119,5 @@ fn main() {
         }
     }
 
-    // for (y, row) in dist.iter().enumerate() {
-    //     for (x, col) in row.iter().enumerate() {
-    //         if (*col) < i32::MAX {
-    //             print!("!{}", map[y][x] as char);
-    //         } else {
-    //             print!(" {}", map[y][x] as char);
-    //         }
-    //     }
-    //     println!("");
-    // }
-    // dbg!(&dist[end_y]);
-    // dbg!(&map);
-    // dbg!((end_x, end_y));
     dbg!(dist[end_y as usize][end_x as usize]);
 }
